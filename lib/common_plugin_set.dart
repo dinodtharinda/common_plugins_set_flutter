@@ -1,8 +1,20 @@
 
-import 'common_plugin_set_platform_interface.dart';
+import 'package:common_plugin_set/src/message.g.dart';
 
 class CommonPluginSet {
-  Future<String?> getPlatformVersion() {
-    return CommonPluginSetPlatform.instance.getPlatformVersion();
+  static CommonPluginSet shared = CommonPluginSet();
+  final BookApi _bookApi = BookApi();
+
+  Future<Book> fetchBook(String isbn)async{
+    return  await _bookApi.getBookDetails(isbn);
+  }
+
+  Future<void> triggerDownload(String isbn)async{
+    await _bookApi.downlodBook(isbn);
+  }
+
+  Future<double> sum(double a, double b)async{
+    
+    return await _bookApi.sum(a, b);
   }
 }

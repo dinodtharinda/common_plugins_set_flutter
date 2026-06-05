@@ -10,34 +10,35 @@ import io.flutter.plugin.common.MethodChannel.Result
 
 /** CommonPluginSetPlugin */
 class CommonPluginSetPlugin :
-    FlutterPlugin,
-    MethodCallHandler {
+    FlutterPlugin, BookApi{
     // The MethodChannel that will the communication between Flutter and native Android
     //
     // This local reference serves to register the plugin with the Flutter Engine and unregister it
     // when the Flutter Engine is detached from the Activity
-    private lateinit var channel: MethodChannel
     private lateinit var context: Context
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         context = flutterPluginBinding.applicationContext
 
-        channel = MethodChannel(flutterPluginBinding.binaryMessenger, "common_plugin_set")
-        channel.setMethodCallHandler(this)
-    }
-
-    override fun onMethodCall(
-        call: MethodCall,
-        result: Result
-    ) {
-        if (call.method == "getPlatformVersion") {
-            result.success("Android ${android.os.Build.VERSION.RELEASE}")
-        } else {
-            result.notImplemented()
-        }
+        BookApi.setUp(flutterPluginBinding.binaryMessenger,this)
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        channel.setMethodCallHandler(null)
+
+    }
+
+    override fun getBookDetails(isbn: String): Book {
+        return Book(isbn, "Example Book Title")
+    }
+
+    override fun downlodBook(
+        isbn: String,
+        callback: (kotlin.Result<Unit>) -> Unit
+    ) {
+        callback(kotlin.Result.success(Unit))
+    }
+
+    override fun sum(a: Double, b: Double): Double {
+        return a + b
     }
 }
