@@ -3,17 +3,20 @@ import 'package:common_plugin_set/common_plugin_set.dart';
 import 'package:common_plugin_set/src/message.g.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const  MaterialApp(
+      home:MyApp()));
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatefulWidget{
   const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
+  
+  
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp>  {
 
   Book book = Book(title: "no book", author: "no auther");
   double sum = 0;
@@ -23,8 +26,23 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     fetchData();
+
+
+
+    CommonPluginSet.shared.reportStream.listen((data){
+      print("UI Received $data");
+
+      if(!mounted) return;
+      
+      snackBarMessage(data);
+    });
   }
-  
+
+
+  void snackBarMessage(String msg){
+      ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+  }
 
   void fetchData()async{
     var b =  await CommonPluginSet.shared.fetchBook("asdf");
@@ -38,8 +56,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(title:  Text(book.title?? "no title")),
         body: Column(
           children: [
@@ -47,7 +64,14 @@ class _MyAppState extends State<MyApp> {
             Center(child: Text(sum.toString()))
           ],
         ),
-      ),
+
+        floatingActionButton: FloatingActionButton(
+          onPressed: (){
+            CommonPluginSet.shared.triggerDownload("Hellow test action download");
+          },
+          child: const Icon(Icons.download),
+        ),
+      
     );
   }
 }

@@ -16,11 +16,14 @@ class CommonPluginSetPlugin :
     // This local reference serves to register the plugin with the Flutter Engine and unregister it
     // when the Flutter Engine is detached from the Activity
     private lateinit var context: Context
+    private lateinit var reportApi: ReportApi
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         context = flutterPluginBinding.applicationContext
 
         BookApi.setUp(flutterPluginBinding.binaryMessenger,this)
+        reportApi = ReportApi(flutterPluginBinding.binaryMessenger)
+
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
@@ -35,10 +38,12 @@ class CommonPluginSetPlugin :
         isbn: String,
         callback: (kotlin.Result<Unit>) -> Unit
     ) {
+        reportApi.reportBook("1234567890", "Example Book Title"){}
         callback(kotlin.Result.success(Unit))
     }
 
     override fun sum(a: Double, b: Double): Double {
+
         return a + b
     }
 }

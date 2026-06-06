@@ -27,3 +27,9 @@ abstract class BookApi {
 
   double sum(double a, double b);
 }
+
+
+@FlutterApi()
+abstract class ReportApi {
+  void reportBook(String isbn, String reason);
+}
