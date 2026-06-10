@@ -6,3 +6,4 @@ class CommonPluginSet {
     return CommonPluginSetPlatform.instance.getPlatformVersion();
   }
 }
+
