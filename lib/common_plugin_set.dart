@@ -1,4 +1,5 @@
 import 'package:common_plugin_set/src/payment_api.g.dart';
+export 'src/payment_api.g.dart';
 
 class CommonPluginSet {
   final PaymentGateway _paymentGateway = PaymentGateway();

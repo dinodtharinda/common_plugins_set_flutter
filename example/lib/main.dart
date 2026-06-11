@@ -1,5 +1,4 @@
 import 'package:common_plugin_set/common_plugin_set.dart';
-import 'package:common_plugin_set/src/payment_api.g.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,7 +15,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool isLoading = false;
   PaymentResult? result;
-
   void toggleLoading(bool state) {
     setState(() {
       isLoading = state;
