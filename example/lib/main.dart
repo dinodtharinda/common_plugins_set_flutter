@@ -1,58 +1,57 @@
-import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:flutter/services.dart';
 import 'package:common_plugin_set/common_plugin_set.dart';
+import 'package:common_plugin_set/src/payment_api.g.dart';
+import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MaterialApp(home: HomeScreen()));
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-  final _commonPluginSetPlugin = CommonPluginSet();
+class _HomeScreenState extends State<HomeScreen> {
+  bool isLoading = false;
+  PaymentResult? result;
 
-  @override
-  void initState() {
-    super.initState();
-    initPlatformState();
+  void toggleLoading(bool state) {
+    setState(() {
+      isLoading = state;
+    });
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await _commonPluginSetPlugin.getPlatformVersion() ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
+  void makePayment() async {
+    toggleLoading(true);
 
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
+    result = await CommonPluginSet.shared.makePayment(
+      PaymentRequest(amount: 500, currency: 'LKR', transactionId: "#1341324"),
+    );
 
-    setState(() {
-      _platformVersion = platformVersion;
-    });
+    toggleLoading(false);
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Plugin example app')),
-        body: Center(child: Text('Running on: $_platformVersion\n')),
+    return Scaffold(
+      appBar: AppBar(title: Text("")),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : result != null
+          ? Center(
+            child: Column(
+                mainAxisAlignment: .center,
+                crossAxisAlignment: .center,
+                children: [Text(result!.title), Text(result!.result)],
+              ),
+          )
+          : Center(child: Text("Result is empty!")),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: makePayment,
+        child: Icon(Icons.add),
       ),
     );
   }

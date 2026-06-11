@@ -1,10 +1,15 @@
-
-import 'common_plugin_set_platform_interface.dart';
+import 'package:common_plugin_set/src/payment_api.g.dart';
 
 class CommonPluginSet {
-  Future<String?> getPlatformVersion() {
-    return CommonPluginSetPlatform.instance.getPlatformVersion();
+  final PaymentGateway _paymentGateway = PaymentGateway();
+
+  static CommonPluginSet shared = CommonPluginSet();
+
+  void initialize(PaymentConfig config) {
+    _paymentGateway.initialize(config);
+  }
+
+  Future<PaymentResult> makePayment(PaymentRequest request) async {
+    return await _paymentGateway.makePayment(request);
   }
 }
-
-
